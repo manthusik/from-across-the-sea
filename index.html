@@ -1,1 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday, Aiya 🎂</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #0b1e3a 0%, #142b52 60%, #1d3a6b 100%);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #fff;
+    text-align: center;
+    padding: 24px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    font-weight: 600;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 3;
+  }
+
+  .sub {
+    font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+    opacity: 0.75;
+    margin-bottom: 48px;
+    position: relative;
+    z-index: 3;
+  }
+
+  /* ---- Floating background emojis ---- */
+  .floater {
+    position: fixed;
+    bottom: -60px;
+    font-size: 28px;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+    animation: floatUp linear infinite;
+    filter: drop-shadow(0 0 6px rgba(255, 220, 150, 0.25));
+  }
+
+  @keyframes floatUp {
+    0% {
+      transform: translateY(0) translateX(0) rotate(0deg);
+      opacity: 0;
+    }
+    10% { opacity: 0.4; }
+    50% { transform: translateY(-50vh) translateX(30px) rotate(180deg); }
+    90% { opacity: 0.4; }
+    100% {
+      transform: translateY(-120vh) translateX(-30px) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  /* ---- Cake ---- */
+  .cake-wrap {
+    position: relative;
+    margin-bottom: 40px;
+    z-index: 3;
+  }
+
+  .cake {
+    position: relative;
+    width: 220px;
+    margin: 0 auto;
+    z-index: 2;
+  }
+
+  .candles {
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    margin-bottom: -6px;
+  }
+
+  .candle {
+    position: relative;
+    width: 8px;
+    height: 42px;
+    background: linear-gradient(90deg, #f7d9a0, #fff3d6, #f7d9a0);
+    border-radius: 3px;
+  }
+
+  .flame {
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 18px;
+    background: radial-gradient(circle at 50% 80%, #fff6b0, #ffb347 60%, #ff7b00);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    opacity: 0;
+    box-shadow: 0 0 12px 4px rgba(255, 170, 60, 0.6);
+  }
+
+  .lit .flame {
+    opacity: 1;
+    animation: flicker 0.18s infinite alternate;
+  }
+
+  @keyframes flicker {
+    from { transform: translateX(-50%) scale(1) rotate(-2deg); }
+    to   { transform: translateX(-50%) scale(1.12) rotate(2deg); }
+  }
+
+  .layer { width: 100%; border-radius: 10px; }
+
+  .layer-top {
+    height: 46px;
+    background: linear-gradient(180deg, #ffd6e0, #ffb3c6);
+    border-bottom: 4px solid #ff8fab;
+  }
+
+  .layer-bottom {
+    height: 60px;
+    background: linear-gradient(180deg, #ffe8b3, #ffd166);
+    border-radius: 0 0 14px 14px;
+    border-top: 4px solid #f4b942;
+  }
+
+  .plate {
+    width: 260px;
+    height: 14px;
+    background: #c9d4e6;
+    border-radius: 50%;
+    margin: 0 auto;
+    opacity: 0.85;
+  }
+
+  /* ---- Button ---- */
+  button {
+    margin-top: 8px;
+    padding: 12px 26px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: #0b1e3a;
+    background: #ffd166;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.15s ease, background 0.2s ease;
+    position: relative;
+    z-index: 3;
+  }
+
+  button:hover { background: #ffe08a; transform: translateY(-2px); }
+  button:active { transform: translateY(0); }
+  button:disabled { cursor: default; }
+
+  /* ---- Message ---- */
+  .message {
+    margin-top: 26px;
+    font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+    line-height: 1.6;
+    max-width: 440px;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    position: relative;
+    z-index: 3;
+  }
+
+  .message.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+  <h1>Happy Birthday, Aiya 🎂</h1>
+  <p class="sub">Seychelles may be far, but you're on my mind today.</p>
+
+  <div class="cake-wrap" id="cakeWrap">
+    <div class="cake">
+      <div class="candles">
+        <div class="candle"><div class="flame"></div></div>
+        <div class="candle"><div class="flame"></div></div>
+        <div class="candle"><div class="flame"></div></div>
+      </div>
+      <div class="layer layer-top"></div>
+      <div class="layer layer-bottom"></div>
+    </div>
+    <div class="plate"></div>
+  </div>
+
+  <button id="lightBtn">Light the candles 🕯️</button>
+
+  <p class="message" id="message">
+    Make a wish, Aiya. 🎉<br>
+    Something small is on its way to you by post — but until then,<br>
+    just know I'm thinking of you today. Have the best one.
+  </p>
+
+<script>
+  const btn = document.getElementById('lightBtn');
+  const message = document.getElementById('message');
+  const candles = document.querySelectorAll('.candle');
+
+  const floaters = ['⭐','🎁','✨','🎈','🌟','🎉','💛','🎀','🕯️','💫'];
+
+  /* ---------- Floating background emojis ---------- */
+  function spawnFloater() {
+    const el = document.createElement('div');
+    el.className = 'floater';
+    el.textContent = floaters[Math.floor(Math.random() * floaters.length)];
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.fontSize = (18 + Math.random() * 18) + 'px';
+
+    const duration = 9 + Math.random() * 8;
+    el.style.animationDuration = duration + 's';
+    el.style.animationDelay = (Math.random() * 2) + 's';
+
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), (duration + 4) * 1000);
+  }
+
+  for (let i = 0; i < 14; i++) spawnFloater();
+  setInterval(spawnFloater, 900);
+
+  /* ---------- Happy Birthday melody ---------- */
+  let audioCtx;
+  function playHappyBirthday() {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const now = audioCtx.currentTime + 0.1;
+
+    const N = {
+      G3:196.00, A3:220.00, B3:246.94, C4:261.63, D4:293.66,
+      E4:329.63, F4:349.23, G4:392.00, A4:440.00,
+      B4:493.88, C5:523.25, E5:659.25, F5:698.46
+    };
+
+    const melody = [
+      [N.G3,0,.5],[N.G3,.5,.5],[N.A3,1,1],[N.G3,2,1],[N.C4,3,1],[N.B3,4,2],
+      [N.G3,6,.5],[N.G3,6.5,.5],[N.A3,7,1],[N.G3,8,1],[N.D4,9,1],[N.C4,10,2],
+      [N.G3,12,.5],[N.G3,12.5,.5],[N.G4,13,1],[N.E4,14,1],[N.C4,15,1],[N.B3,16,1],[N.A3,17,1],
+      [N.F4,18,.5],[N.F4,18.5,.5],[N.E4,19,1],[N.C4,20,1],[N.D4,21,1],[N.C4,22,2]
+    ];
+
+    const beat = 0.42;
+
+    melody.forEach(([freq, start, dur]) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = freq;
+
+      const t0 = now + start * beat;
+      const t1 = t0 + dur * beat * 0.95;
+
+      gain.gain.setValueAtTime(0.0001, t0);
+      gain.gain.exponentialRampToValueAtTime(0.18, t0 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t1);
+
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start(t0);
+      osc.stop(t1 + 0.05);
+    });
+  }
+
+  /* ---------- Main click ---------- */
+  btn.addEventListener('click', () => {
+    btn.disabled = true;
+    btn.textContent = 'Wishing... ✨';
+
+    candles.forEach((candle, i) => {
+      setTimeout(() => candle.classList.add('lit'), i * 450);
+    });
+
+    const afterCandles = candles.length * 450;
+
+    setTimeout(playHappyBirthday, afterCandles + 300);
+
+    setTimeout(() => {
+      message.classList.add('show');
+      btn.textContent = '🎉 Happy Birthday!';
+    }, afterCandles + 1200);
+  });
+</script>
+
+</body>
+</html>
